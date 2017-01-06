@@ -29,6 +29,12 @@ class Combobox extends Component {
         onCurrentSelectPanelChange: PropTypes.func,
     };
 
+    constructor(props) {
+        super(props)
+        this.onEnterSelectPanel = this.onEnterSelectPanel.bind(this)
+        this.onItemChange = this.onItemChange.bind(this)
+    }
+
     onItemChange(type, itemValue) {
         const { onChange, defaultOpenValue } = this.props
         const value = (this.props.value || defaultOpenValue).clone()

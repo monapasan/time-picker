@@ -44,25 +44,17 @@ class Panel extends Component {
         addon: PropTypes.func,
     };
 
-    getDefaultProps() {
-        return {
-            prefixCls: 'rc-time-picker-panel',
-            onChange: noop,
-            onClear: noop,
-            disabledHours: noop,
-            disabledMinutes: noop,
-            disabledSeconds: noop,
-            defaultOpenValue: moment(),
-            addon: noop,
-        }
-    }
-
-    getInitialState() {
-        return {
-            value: this.props.value,
+    constructor(props) {
+        super(props)
+        this.state = {
+            value: props.value,
             selectionRange: [],
         }
+        this.onChange = this.onChange.bind(this)
+        this.onClear = this.onClear.bind(this)
+        this.onCurrentSelectPanelChange = this.onCurrentSelectPanelChange.bind(this)
     }
+
 
     componentWillReceiveProps(nextProps) {
         const value = nextProps.value
@@ -147,6 +139,17 @@ class Panel extends Component {
             </div>
         )
     }
+}
+
+Panel.defaultProps = {
+    prefixCls: 'rc-time-picker-panel',
+    onChange: noop,
+    onClear: noop,
+    disabledHours: noop,
+    disabledMinutes: noop,
+    disabledSeconds: noop,
+    defaultOpenValue: moment(),
+    addon: noop,
 }
 
 export default Panel

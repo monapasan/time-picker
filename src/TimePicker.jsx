@@ -1,9 +1,12 @@
-import React, { PropTypes } from 'react'
+import React, { PropTypes, Component } from 'react'
 import Trigger from 'rc-trigger'
 import Panel from './Panel'
 import placements from './placements'
 import moment from 'moment'
 
+//TODO: replace with inline style
+// TEMPORARY
+import 'rc-time-picker/assets/index.css'
 function noop() {
 }
 
@@ -43,40 +46,21 @@ class Picker extends Component {
         addon: PropTypes.func
     };
 
-    getDefaultProps() {
-        return {
-            clearText: 'clear',
-            prefixCls: 'rc-time-picker',
-            defaultOpen: false,
-            style: {},
-            className: '',
-            align: {},
-            defaultOpenValue: moment(),
-            allowEmpty: true,
-            showHour: true,
-            showMinute: true,
-            showSecond: true,
-            disabledHours: noop,
-            disabledMinutes: noop,
-            disabledSeconds: noop,
-            hideDisabledOptions: false,
-            placement: 'bottomLeft',
-            onChange: noop,
-            onOpen: noop,
-            onClose: noop,
-            addon: noop
-        }
-    }
-
-    getInitialState() {
+    constructor(props) {
+        super(props)
         this.savePanelRef = refFn.bind(this, 'panelInstance')
         const {
             defaultOpen,
             defaultValue,
             open = defaultOpen,
             value = defaultValue
-        } = this.props
-        return {open, value}
+        } = props
+        this.state = { open, value }
+        this.onPanelChange = this.onPanelChange.bind(this)
+        this.onPanelClear = this.onPanelClear.bind(this)
+        this.onVisibleChange = this.onVisibleChange.bind(this)
+        this.onEsc = this.onEsc.bind(this)
+        this.onKeyDown = this.onKeyDown.bind(this)
     }
 
     componentWillReceiveProps(nextProps) {
@@ -203,7 +187,7 @@ class Picker extends Component {
                 popupAlign={align}
                 builtinPlacements={placements}
                 popupPlacement={placement}
-                action={disabled ? [] : ['click']}
+                action={disabled ? [] : []}
                 destroyPopupOnHide
                 getPopupContainer={getPopupContainer}
                 popupTransitionName={transitionName}
@@ -223,6 +207,29 @@ class Picker extends Component {
             </Trigger>
         )
     }
+}
+
+Picker.defaultProps = {
+    clearText: 'clear',
+    prefixCls: 'rc-time-picker',
+    defaultOpen: false,
+    style: {},
+    className: '',
+    align: {},
+    defaultOpenValue: moment(),
+    allowEmpty: true,
+    showHour: true,
+    showMinute: true,
+    showSecond: true,
+    disabledHours: noop,
+    disabledMinutes: noop,
+    disabledSeconds: noop,
+    hideDisabledOptions: false,
+    placement: 'bottomLeft',
+    onChange: noop,
+    onOpen: noop,
+    onClose: noop,
+    addon: noop
 }
 
 export default Picker

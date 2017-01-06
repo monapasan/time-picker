@@ -23,95 +23,99 @@ class Header extends Component {
         currentSelectPanel: PropTypes.string,
     };
 
-    getInitialState() {
-        const { value, format } = this.props
-        return {
-          str: value && value.format(format) || '',
-          invalid: false,
+    constructor(props) {
+        super(props)
+        const { value, format } = props
+        this.state =  {
+            str: value && value.format(format) || '',
+            invalid: false,
         }
+        this.onInputChange = this.onInputChange.bind(this)
+        this.onKeyDown = this.onKeyDown.bind(this)
+        this.onClear = this.onClear.bind(this)
     }
 
     componentWillReceiveProps(nextProps) {
         const { value, format } = nextProps
         this.setState({
-          str: value && value.format(format) || '',
-          invalid: false,
+            str: value && value.format(format) || '',
+            invalid: false,
         })
     }
 
     onInputChange(event) {
-    const str = event.target.value
-    this.setState({str})
-    const {
-        format,
-        hourOptions,
-        minuteOptions,
-        secondOptions,
-        disabledHours,
-        disabledMinutes,
-        disabledSeconds,
-        onChange,
-        allowEmpty
-    } = this.props
+        const str = event.target.value
+        this.setState({str})
+        const {
+            format,
+            hourOptions,
+            minuteOptions,
+            secondOptions,
+            disabledHours,
+            disabledMinutes,
+            disabledSeconds,
+            onChange,
+            allowEmpty
+        } = this.props
 
-    if (str) {
-        const originalValue = this.props.value
-        const value = this.getProtoValue().clone()
-        const parsed = moment(str, format, true)
-        if (!parsed.isValid()) {
-            this.setState({invalid: true})
-            return
-        }
-        value.hour(parsed.hour()).minute(parsed.minute()).second(parsed.second())
-
-        // if time value not allowed, response warning.
-        if (
-            hourOptions.indexOf(value.hour()) < 0 ||
-            minuteOptions.indexOf(value.minute()) < 0 ||
-            secondOptions.indexOf(value.second()) < 0
-        ) {
-            this.setState({invalid: true})
-            return
-        }
-
-        // if time value is disabled, response warning.
-        const disabledHourOptions = disabledHours()
-        const disabledMinuteOptions = disabledMinutes(value.hour())
-        const disabledSecondOptions = disabledSeconds(value.hour(), value.minute())
-        if (
-            (disabledHourOptions && disabledHourOptions.indexOf(value.hour()) >= 0) ||
-            (disabledMinuteOptions && disabledMinuteOptions.indexOf(value.minute()) >= 0) ||
-            (disabledSecondOptions && disabledSecondOptions.indexOf(value.second()) >= 0)
-        ) {
-            this.setState({invalid: true})
-            return
-        }
-
-        if (originalValue) {
-            if (
-                originalValue.hour() !== value.hour() ||
-                originalValue.minute() !== value.minute() ||
-                originalValue.second() !== value.second()
-            ) {
-                // keep other fields for rc-calendar
-                const changedValue = originalValue.clone()
-                changedValue.hour(value.hour())
-                changedValue.minute(value.minute())
-                changedValue.second(value.second())
-                onChange(changedValue)
+        if (str) {
+            const originalValue = this.props.value
+            const value = this.getProtoValue().clone()
+            const parsed = moment(str, format, true)
+            if (!parsed.isValid()) {
+                this.setState({invalid: true})
+                return
             }
-        } else if (originalValue !== value) {
-            onChange(value)
-        }
-    } else if (allowEmpty) {
-        onChange(null)
-    } else {
-        this.setState({invalid: true})
-        return
-    }
+            value.hour(parsed.hour()).minute(parsed.minute()).second(parsed.second())
 
-    this.setState({invalid: false})
-}
+            // if time value not allowed, response warning.
+            if (
+                hourOptions.indexOf(value.hour()) < 0 ||
+                minuteOptions.indexOf(value.minute()) < 0 ||
+                secondOptions.indexOf(value.second()) < 0
+            ) {
+                this.setState({invalid: true})
+                return
+            }
+
+            // if time value is disabled, response warning.
+            const disabledHourOptions = disabledHours()
+            const disabledMinuteOptions = disabledMinutes(value.hour())
+            const disabledSecondOptions = disabledSeconds(value.hour(), value.minute())
+            if (
+                (disabledHourOptions && disabledHourOptions.indexOf(value.hour()) >= 0) ||
+                (disabledMinuteOptions && disabledMinuteOptions.indexOf(value.minute()) >= 0) ||
+                (disabledSecondOptions && disabledSecondOptions.indexOf(value.second()) >= 0)
+            ) {
+                this.setState({invalid: true})
+                return
+            }
+
+            if (originalValue) {
+                if (
+                    originalValue.hour() !== value.hour() ||
+                    originalValue.minute() !== value.minute() ||
+                    originalValue.second() !== value.second()
+                ) {
+                    // keep other fields for rc-calendar
+                    const changedValue = originalValue.clone()
+                    changedValue.hour(value.hour())
+                    changedValue.minute(value.minute())
+                    changedValue.second(value.second())
+                    onChange(changedValue)
+                }
+            } else if (originalValue !== value) {
+                onChange(value)
+            }
+        } else if (allowEmpty) {
+            onChange(null)
+        } else {
+            this.setState({invalid: true})
+            return
+        }
+
+        this.setState({invalid: false})
+    }
 
     onKeyDown(e) {
         if (e.keyCode === 27) {
