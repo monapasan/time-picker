@@ -53,7 +53,15 @@ class Combobox extends Component {
     }
 
     getHourSelect(hour) {
-        const { prefixCls, hourOptions, disabledHours, showHour } = this.props
+        const {
+            prefixCls,
+            hourOptions,
+            disabledHours,
+            showHour,
+            style,
+        } = this.props
+
+        const { select: selectStyle } = style
         if (!showHour) {
             return null
         }
@@ -61,6 +69,7 @@ class Combobox extends Component {
 
         return (
             <Select
+                style={selectStyle}
                 prefixCls={prefixCls}
                 options={hourOptions.map(option => formatOption(option, disabledOptions))}
                 selectedIndex={hourOptions.indexOf(hour)}
@@ -72,7 +81,16 @@ class Combobox extends Component {
     }
 
     getMinuteSelect(minute) {
-        const { prefixCls, minuteOptions, disabledMinutes, defaultOpenValue, showMinute } = this.props
+        const {
+            prefixCls,
+            minuteOptions,
+            disabledMinutes,
+            defaultOpenValue,
+            showMinute,
+            style,
+        } = this.props
+
+        const { select: selectStyle } = style
         if (!showMinute) {
             return null
         }
@@ -81,6 +99,7 @@ class Combobox extends Component {
 
         return (
             <Select
+                style={selectStyle}
                 prefixCls={prefixCls}
                 options={minuteOptions.map(option => formatOption(option, disabledOptions))}
                 selectedIndex={minuteOptions.indexOf(minute)}
@@ -92,7 +111,16 @@ class Combobox extends Component {
     }
 
     getSecondSelect(second) {
-        const { prefixCls, secondOptions, disabledSeconds, showSecond, defaultOpenValue } = this.props
+        const {
+            prefixCls,
+            secondOptions,
+            disabledSeconds,
+            showSecond,
+            defaultOpenValue,
+            style,
+        } = this.props
+
+        const { select: selectStyle } = style
         if (!showSecond) {
             return null
         }
@@ -101,6 +129,7 @@ class Combobox extends Component {
 
         return (
             <Select
+                style={selectStyle}
                 prefixCls={prefixCls}
                 options={secondOptions.map(option => formatOption(option, disabledOptions))}
                 selectedIndex={secondOptions.indexOf(second)}
@@ -121,6 +150,12 @@ class Combobox extends Component {
                 {this.getSecondSelect(value.second())}
             </div>
         )
+    }
+}
+
+Combobox.defaultProps = {
+    style: {
+
     }
 }
 

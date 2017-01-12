@@ -146,12 +146,18 @@ class Header extends Component {
     }
 
     getInput() {
-        const { prefixCls, placeholder } = this.props
+        let { prefixCls, placeholder, style:{input:style} } = this.props
         const { invalid, str } = this.state
+        const { invalid: invalidStyle, ...rest } = style
+        style = {
+            ...rest,
+            ...(invalid ? invalidStyle : {})
+        }
         const invalidClass = invalid ? `${prefixCls}-input-invalid` : ''
         return (
             <input
-                className={`${prefixCls}-input  ${invalidClass}`}
+                className={`${prefixCls}-input ${invalidClass}`}
+                style={style}
                 ref="input"
                 onKeyDown={this.onKeyDown}
                 value={str}
@@ -162,13 +168,22 @@ class Header extends Component {
     }
 
     render() {
-        const { prefixCls } = this.props
+        const { prefixCls, style: {wrap: style} } = this.props
+
         return (
-            <div className={`${prefixCls}-input-wrap`}>
+            <div className={`${prefixCls}-input-wrap`} style={style}>
                 {this.getInput()}
                 {this.getClearButton()}
             </div>
         )
+    }
+}
+
+Header.defaultProps = {
+    style: {
+        invalid: {
+
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react'
 import ReactDom from 'react-dom'
 import classnames from 'classnames'
+import Radium from 'radium';
 
 const scrollTo = (element, to, duration) => {
     const requestAnimationFrame = window.requestAnimationFrame ||
@@ -52,18 +53,45 @@ class Select extends Component {
     }
 
     getOptions() {
-        const {options, selectedIndex, prefixCls} = this.props
+        const {
+            options,
+            selectedIndex,
+            prefixCls,
+            style
+        } = this.props
+
+        const { li: liStyle } = style
+
+        const {
+            selected : selectedStyle,
+            disabled : disabledStyle,
+            ...normalStyle
+        } = liStyle
+
         return options.map((item, index) => {
+            const selected = selectedIndex === index
+            const { disabled } = item
             const cls = classnames({
-                [`${prefixCls}-select-option-selected`]: selectedIndex === index,
-                [`${prefixCls}-select-option-disabled`]: item.disabled
+                [`${prefixCls}-select-option-selected`]: selected,
+                [`${prefixCls}-select-option-disabled`]: disabled
             })
             let onclick = null
-            if (!item.disabled) {
+            if (!disabled) {
                 onclick = this.onSelect.bind(this, + item.value)
             }
+            const optionStyle = {
+                ...normalStyle,
+                ...(selected ? selectedStyle : {}),
+                ...(disabled ? disabledStyle : {})
+            }
             return (
-                <li className={cls} key={index} onClick={onclick} disabled={item.disabled}>
+                <li
+                    className={cls}
+                    key={index}
+                    onClick={onclick}
+                    disabled={disabled}
+                    style={optionStyle}
+                >
                     {item.value}
                 </li>
             )
@@ -91,14 +119,27 @@ class Select extends Component {
             return null
         }
 
-        const {prefixCls} = this.props
+        const { prefixCls, style } = this.props
+        const { ul: ulStyle, li, ...restStyle } = style
 
         return (
-            <div className={`${prefixCls}-select`} onMouseEnter={this.props.onMouseEnter}>
-                <ul ref="list">{this.getOptions()}</ul>
+            <div
+                className={`${prefixCls}-select`}
+                onMouseEnter={this.props.onMouseEnter}
+                style={restStyle}
+            >
+                <ul ref="list" style={ulStyle}>{this.getOptions()}</ul>
             </div>
         )
     }
 }
 
-export default Select
+Select.defaultProps = {
+    style: {
+        li: {
+            selected: {},
+            disabled: {},
+        }
+    }
+}
+export default Radium(Select)

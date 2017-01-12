@@ -3,10 +3,9 @@ import Trigger from 'rc-trigger'
 import Panel from './Panel'
 import placements from './placements'
 import moment from 'moment'
+import { defaultSkin } from './skin'
+import Radium from 'radium';
 
-//TODO: replace with inline style
-// TEMPORARY
-import 'rc-time-picker/assets/index.css'
 function noop() {
 }
 
@@ -130,11 +129,14 @@ class Picker extends Component {
             showSecond,
             defaultOpenValue,
             clearText,
+            style,
             addon
         } = this.props
+        const { panel : panelStyle } = style
         return (
             <Panel clearText={clearText}
                 prefixCls={`${prefixCls}-panel`}
+                style={panelStyle}
                 ref={this.savePanelRef}
                 value={this.state.value}
                 onChange={this.onPanelChange}
@@ -174,14 +176,17 @@ class Picker extends Component {
             disabled, transitionName, style, className, showHour,
             showMinute, showSecond, getPopupContainer,
         } = this.props
+
         const { open, value } = this.state
         let popupClassName
+        const { input, panel, trigger: triggerStyle, ...restStyle } = style
         if (!showHour || !showMinute || !showSecond) {
             popupClassName = `${prefixCls}-panel-narrow`
         }
         return (
             <Trigger
                 prefixCls={`${prefixCls}-panel`}
+                popupStyle={triggerStyle}
                 popupClassName={popupClassName}
                 popup={this.getPanelElement()}
                 popupAlign={align}
@@ -194,9 +199,10 @@ class Picker extends Component {
                 popupVisible={open}
                 onPopupVisibleChange={this.onVisibleChange}
             >
-                <span className={`${prefixCls} ${className}`} style={style}>
+                <span className={`${prefixCls} ${className}`} style={restStyle}>
                     <input
                         className={`${prefixCls}-input`}
+                        style={input}
                         ref="picker" type="text" placeholder={placeholder}
                         readOnly
                         onKeyDown={this.onKeyDown}
@@ -213,7 +219,7 @@ Picker.defaultProps = {
     clearText: 'clear',
     prefixCls: 'rc-time-picker',
     defaultOpen: false,
-    style: {},
+    style: defaultSkin,
     className: '',
     align: {},
     defaultOpenValue: moment(),
@@ -232,4 +238,4 @@ Picker.defaultProps = {
     addon: noop
 }
 
-export default Picker
+export default Radium(Picker)

@@ -84,9 +84,15 @@ class Panel extends Component {
         const {
             prefixCls, className, placeholder, disabledHours, disabledMinutes,
             disabledSeconds, hideDisabledOptions, allowEmpty, showHour, showMinute,
-            showSecond, format, defaultOpenValue, clearText, onEsc, addon,
+            showSecond, format, defaultOpenValue, clearText, onEsc, addon, style,
         } = this.props
 
+        const {
+            header: headerStyle,
+            combobox: comboboxStyle,
+            inner: innerStyle,
+            ...rest
+        } = style
         const { value, currentSelectPanel, } = this.state
         const disabledHourOptions = disabledHours()
         const disabledMinuteOptions = disabledMinutes(value ? value.hour() : null)
@@ -98,10 +104,15 @@ class Panel extends Component {
         const secondOptions = generateOptions(60, disabledSecondOptions, hideDisabledOptions)
 
         return (
-            <div className={classNames({ [`${prefixCls}-inner`]: true, [className]: !!className })}>
+            <div className={
+                    classNames({ [`${prefixCls}-inner`]: true, [className]: !!className })
+                }
+                style={innerStyle}
+                >
                 <Header
                   clearText={clearText}
                   prefixCls={prefixCls}
+                  style={headerStyle}
                   defaultOpenValue={defaultOpenValue}
                   value={value}
                   currentSelectPanel={currentSelectPanel}
@@ -120,6 +131,7 @@ class Panel extends Component {
                 />
                 <Combobox
                   prefixCls={prefixCls}
+                  style={comboboxStyle}
                   value={value}
                   defaultOpenValue={defaultOpenValue}
                   format={format}
@@ -143,6 +155,7 @@ class Panel extends Component {
 
 Panel.defaultProps = {
     prefixCls: 'rc-time-picker-panel',
+    style: {},
     onChange: noop,
     onClear: noop,
     disabledHours: noop,
